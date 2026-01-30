@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hej…</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(180deg, #1a1a2e, #0f0f14);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .heart {
+    position: absolute;
+    bottom: -40px;
+    color: rgba(255, 90, 138, 0.2);
+    animation: floatUp linear infinite;
+  }
+
+  @keyframes floatUp {
+    from { transform: translateY(0) scale(0.8); opacity: 0; }
+    20% { opacity: 1; }
+    to { transform: translateY(-110vh) scale(1.2); opacity: 0; }
+  }
+
+  .card {
+    width: 90%;
+    max-width: 340px;
+    text-align: center;
+    z-index: 2;
+    backdrop-filter: blur(10px);
+  }
+
+  .screen {
+    animation: screenIn 0.6s ease;
+  }
+
+  @keyframes screenIn {
+    from { opacity: 0; transform: scale(0.96) translateY(12px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .fadeOut {
+    animation: screenOut 0.4s forwards;
+  }
+
+  @keyframes screenOut {
+    to { opacity: 0; transform: scale(0.96) translateY(-10px); }
+  }
+
+  h2, p {
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0;
+    animation: textIn 0.6s ease forwards;
+  }
+
+  h2 { animation-delay: 0.2s; }
+  p  { animation-delay: 0.4s; }
+
+  @keyframes textIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .buttons {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: textIn 0.6s ease forwards;
+    animation-delay: 0.6s;
+  }
+
+  button {
+    padding: 14px 22px;
+    border-radius: 24px;
+    border: none;
+    background: #ff5a8a;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
+
+  .secondary {
+    background: transparent;
+    color: #ccc;
+  }
+
+  .bigHeart {
+    font-size: 52px;
+    animation: heartPop 0.8s ease;
+  }
+
+  @keyframes heartPop {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+
+  .loader {
+    font-size: 20px;
+    opacity: 0.8;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 0.4; }
+    50% { opacity: 1; }
+    100% { opacity: 0.4; }
+  }
+</style>
+</head>
+
+<body>
+
+<audio id="clickSound" src="click.mp3"></audio>
+
+<script>
+  for (let i = 0; i < 18; i++) {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "❤";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.animationDuration = 8 + Math.random() * 6 + "s";
+    h.style.fontSize = 14 + Math.random() * 18 + "px";
+    document.body.appendChild(h);
+  }
+</script>
+
+<div class="card" id="app"></div>
+
+<script>
+  const app = document.getElementById("app");
+  const sound = document.getElementById("clickSound");
+
+  const screens = [
+    `<div class="screen"><div class="loader">Hej…</div></div>`,
+
+    `<div class="screen">
+      <h2>Hej Kasiu…</h2>
+      <div class="buttons"><button onclick="next()">Dalej</button></div>
+    </div>`,
+
+    `<div class="screen">
+      <p>Wiem, że ostatnio<br>nie jest między nami łatwo.</p>
+      <div class="buttons"><button onclick="next()">Dalej</button></div>
+    </div>`,
+
+    `<div class="screen">
+      <p>Ale nadal bardzo<br>mi na Tobie zależy.</p>
+      <div class="buttons"><button onclick="next()">Dalej</button></div>
+    </div>`,
+
+    `<div class="screen">
+      <p>Czy chciałabyś spędzić<br>ze mną Walentynki?</p>
+      <div class="buttons">
+        <button onclick="yes()">❤️ Tak</button>
+        <button class="secondary" onclick="maybe()">🤍 Jeszcze nie wiem</button>
+      </div>
+    </div>`
+  ];
+
+  let step = 0;
+
+  function vibrate() {
+    if (navigator.vibrate) navigator.vibrate(15);
+  }
+
+  function playSound() {
+    sound.currentTime = 0;
+    sound.play();
+  }
+
+  function render(html) {
+    app.innerHTML = html;
+  }
+
+  function next() {
+    vibrate(); playSound();
+    app.classList.add("fadeOut");
+    setTimeout(() => {
+      step++;
+      app.classList.remove("fadeOut");
+      render(screens[step]);
+    }, 400);
+  }
+
+  function yes() {
+    vibrate(); playSound();
+    render(`
+      <div class="screen">
+        <div class="bigHeart">💙</div>
+        <p>Dziękuję.<br>Bardzo się cieszę.</p>
+      </div>
+    `);
+  }
+
+  function maybe() {
+    vibrate(); playSound();
+    render(`
+      <div class="screen">
+        <p>Rozumiem.<br>Daj sobie czas.<br>Jestem.</p>
+      </div>
+    `);
+  }
+
+  render(screens[0]);
+  setTimeout(() => render(screens[1]), 1600);
+</script>
+
+</body>
+</html>
