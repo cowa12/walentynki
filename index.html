@@ -1,45 +1,101 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hej…</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #0f0f14;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .card {
-      max-width: 320px;
-      text-align: center;
-      animation: fade 0.6s ease;
-    }
-    button {
-      margin-top: 20px;
-      padding: 12px 20px;
-      border-radius: 20px;
-      border: none;
-      background: #ff5a8a;
-      color: white;
-      font-size: 16px;
-    }
-    .secondary {
-      background: transparent;
-      color: #ccc;
-      margin-left: 10px;
-    }
-    @keyframes fade {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hej…</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: radial-gradient(circle at top, #1a1a2e, #0f0f14);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .card {
+    width: 90%;
+    max-width: 340px;
+    text-align: center;
+    animation: fadeIn 0.8s ease;
+  }
+
+  h2, p {
+    line-height: 1.5;
+  }
+
+  .typing {
+    border-right: 2px solid rgba(255,255,255,0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    animation: typing 2s steps(30, end) forwards, blink 0.8s infinite;
+  }
+
+  button {
+    margin-top: 25px;
+    padding: 14px 22px;
+    border-radius: 25px;
+    border: none;
+    background: #ff5a8a;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    animation: pulse 2s infinite;
+  }
+
+  .secondary {
+    background: transparent;
+    color: #ccc;
+    animation: none;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  @keyframes blink {
+    50% { border-color: transparent; }
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .fadeOut {
+    animation: fadeOut 0.4s ease forwards;
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-10px); }
+  }
+</style>
 </head>
+
 <body>
 
 <div class="card" id="app"></div>
@@ -48,18 +104,37 @@
   const app = document.getElementById("app");
 
   const screens = [
-    `<h2>Hej…</h2>
-     <p>Chciałbym Cię o coś zapytać.</p>
-     <button onclick="next()">Dalej</button>`,
+    `
+    <h2 class="typing">Hej Kasiu…</h2>
+    <button onclick="next()">Dalej</button>
+    `,
 
-    `<p>Wiem, że ostatnio nie jest idealnie.<br>
-     Ale bardzo mi na Tobie zależy.</p>
-     <button onclick="next()">Dalej</button>`,
+    `
+    <p class="typing">
+      Wiem, że ostatnio<br>
+      nie jest między nami łatwo.
+    </p>
+    <button onclick="next()">Dalej</button>
+    `,
 
-    `<p>Czy chciałabyś spędzić ze mną Walentynki?<br>
-     Spokojnie. Bez presji.</p>
-     <button onclick="yes()">❤️ Tak</button>
-     <button class="secondary" onclick="maybe()">🤍 Jeszcze nie wiem</button>`
+    `
+    <p class="typing">
+      Ale nadal bardzo<br>
+      mi na Tobie zależy.
+    </p>
+    <button onclick="next()">Dalej</button>
+    `,
+
+    `
+    <p class="typing">
+      Czy chciałabyś<br>
+      spędzić ze mną Walentynki?
+    </p>
+    <div class="buttons">
+      <button onclick="yes()">❤️ Tak</button>
+      <button class="secondary" onclick="maybe()">🤍 Jeszcze nie wiem</button>
+    </div>
+    `
   ];
 
   let step = 0;
@@ -69,16 +144,32 @@
   }
 
   function next() {
-    step++;
-    render(screens[step]);
+    app.classList.add("fadeOut");
+    setTimeout(() => {
+      step++;
+      app.classList.remove("fadeOut");
+      render(screens[step]);
+    }, 400);
   }
 
   function yes() {
-    render("<h2>Dziękuję 💙</h2><p>Bardzo się cieszę.<br>Napiszę do Ciebie.</p>");
+    render(`
+      <h2>💙</h2>
+      <p class="typing">
+        Dziękuję.<br>
+        Bardzo się cieszę.
+      </p>
+    `);
   }
 
   function maybe() {
-    render("<h2>Rozumiem</h2><p>Daj sobie czas.<br>Jestem.</p>");
+    render(`
+      <p class="typing">
+        Rozumiem.<br>
+        Daj sobie czas.<br>
+        Jestem.
+      </p>
+    `);
   }
 
   render(screens[0]);
@@ -86,3 +177,4 @@
 
 </body>
 </html>
+
