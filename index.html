@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hej…</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f0f14;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      max-width: 320px;
+      text-align: center;
+      animation: fade 0.6s ease;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      border-radius: 20px;
+      border: none;
+      background: #ff5a8a;
+      color: white;
+      font-size: 16px;
+    }
+    .secondary {
+      background: transparent;
+      color: #ccc;
+      margin-left: 10px;
+    }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card" id="app"></div>
+
+<script>
+  const app = document.getElementById("app");
+
+  const screens = [
+    `<h2>Hej…</h2>
+     <p>Chciałbym Cię o coś zapytać.</p>
+     <button onclick="next()">Dalej</button>`,
+
+    `<p>Wiem, że ostatnio nie jest idealnie.<br>
+     Ale bardzo mi na Tobie zależy.</p>
+     <button onclick="next()">Dalej</button>`,
+
+    `<p>Czy chciałabyś spędzić ze mną Walentynki?<br>
+     Spokojnie. Bez presji.</p>
+     <button onclick="yes()">❤️ Tak</button>
+     <button class="secondary" onclick="maybe()">🤍 Jeszcze nie wiem</button>`
+  ];
+
+  let step = 0;
+
+  function render(html) {
+    app.innerHTML = html;
+  }
+
+  function next() {
+    step++;
+    render(screens[step]);
+  }
+
+  function yes() {
+    render("<h2>Dziękuję 💙</h2><p>Bardzo się cieszę.<br>Napiszę do Ciebie.</p>");
+  }
+
+  function maybe() {
+    render("<h2>Rozumiem</h2><p>Daj sobie czas.<br>Jestem.</p>");
+  }
+
+  render(screens[0]);
+</script>
+
+</body>
+</html>
